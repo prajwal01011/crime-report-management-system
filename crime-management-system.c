@@ -12,6 +12,7 @@ struct criminal_record{
     char name[20];
     long long int national_id;
     int age;
+    char height[10];//stores feet and inches in string to take a specific character
     int feet;
     int inches;
     char crime[50];
@@ -92,12 +93,11 @@ void get_valid_string(char input[], char result[], int size)//function definitio
     } while (result[0] == '\0');
 }
 
-int get_valid_int_range(char input[], int min, int max);
-int get_valid_int_range(char input[], int min, int max)//function to take  valid height
+int get_valid_int_height(char input[], int min, int max);
+int get_valid_int_height(char input[], int min, int max)//function to take  valid height
 {
     int value;
     int input_is_valid;
-
     do
     {
         // Ask the user for input
@@ -143,9 +143,9 @@ void add(void) // Function definition: Adds a new criminal record to the system
     criminal.age = get_valid_int("Enter Criminal Age: ");
     
     printf("Enter Criminal Height in Feet & Inches: \n");
-    criminal.feet = get_valid_int("Enter  First Feet Only: ");
+    criminal.feet= get_valid_int_height("Enter  First Feet Only: ", 1,7);
     
-    criminal.inches = get_valid_int("Now Enter The Inches: ");
+    criminal.inches =get_valid_int_height("Now Enter The Inches: ",0,11);
     
     get_valid_string("Enter Crime Commeted Type: ", criminal.crime, sizeof(criminal.crime));
 
@@ -160,30 +160,67 @@ void display() // Function definition: Displays all stored criminal records
 {
     FILE *fp;
     fp =fopen("criminal.dat","rb");//rb is read mode for .dat or binary data
-    printf("-----------------------------CRIMINAL RECORDS--------------------------------\n\n");
+    printf("\t\t\t\t\tCRIMINAL RECORDS\n");
     if(fp==NULL){
         fprintf(stderr,"file not opened");//stderr help to show error in a console without giving problem to program output
         return; 
     }
     else{
-        char height[10];//stores feet and inches in string to take a specific character
-        sprintf(height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable
+        
         printf("=============================================================================================================================================\n"); 
         printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
-        printf("=============================================================================================================================================\n"); 
+        printf("=============================================================================================================================================\n");
         while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
-        printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+        sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
+        printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
         printf("=============================================================================================================================================\n"); 
-    }
+                }
         fclose(fp);
     }
 
 }
-void search(void);
+    void search(void);
 
-void search() // Function definition: Searches for a specific criminal record
-{
+    void search() // Function definition: Searches for a specific criminal record
+    {
+        int ID,nid,input;
+        printf("You Have Successfully Pressed '3' to Search Criminal Record\n");
+        while(1){
+        input=get_valid_int("[1] Criminal Id\t \t[2] National Id\nEnter Valid input:\n");
+        printf("please enter valid input\n");
+        
+            switch(input)
+            {
 
+                case 1:{
+                    int id;
+                    FILE *fp;
+                    fp=fopen("criminal.dat", "rb");
+                    get_valid_int("Enter Criminal id");
+
+                    printf("=============================================================================================================================================\n");
+                    printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                    printf("=============================================================================================================================================\n");
+                    while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
+                        if(criminal.criminal_id == id){
+                            sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
+                            printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n"); 
+                            }
+                    }
+                    fclose(fp);
+                    return; 
+                    }
+        
+                case 2:{
+                    return;
+                    }
+
+                default: {
+                printf("please enter valid input\n");
+                    }
+            }
+    }
 }
 void modify(void);
 
@@ -199,54 +236,57 @@ void delete() // Function definition: Removes a criminal record from the system
 }
 
 
-int main(){
-    int task;
-    while(1){
-    printf("\t \t  Crime Record Management System \t \t \n");
-    printf("-----------------------------------------------------------------------------\n");
-    printf("[1] Add Criminal Records \t \t [2] Display Criminal Records \n");
-    printf("[3] Search  Criminal Record \t  \t [4] Modify Criminal Record \n");
-    printf("[5] Delete Criminal Record\t  \t [6] Exit \n");
-    printf("-----------------------------------------------------------------------------\n");
-    task = get_valid_int("Enter the number assigned to functions: ");
-    switch(task){
-        case 1:{
-          add();
-          break;  
-        }
-        case 2:{
-            display();
-            break;
-        }
-        case 3:{
-            search();
-            break;
-        }
-        case 4:{
-            modify();
-            break;
-        }
-        case 5:{
-            delete();
-            break;
-        }
-        case 6:{
-            printf("you have exited the program\n");
-            printf("Exited successfully\n");
+    int main(){
+        int task;
+        while(1){
+        printf("=============================================================================================================================================\n");
+        printf("\t\t\t\t\t\tCRIME MANAGEMENT SYSTEM \n");
+        printf("=============================================================================================================================================\n");
+        printf("\t\t[1] Add Criminal Records\t     \t\t\t[2] Display Criminal Records \n");
+        printf("\t\t[3] Search  Criminal Record\t  \t\t\t[4] Modify Criminal Record \n");
+        printf("\t\t[5] Delete Criminal Record\t   \t\t\t[6] Exit \n");
+        printf("=============================================================================================================================================\n");
+        task = get_valid_int("Enter the number assigned to functions: ");
+        printf("=============================================================================================================================================\n");
+        switch(task){
+            case 1:{
+            add();
+            break;  
+                    }
+            case 2:{
+                display();
+                break;
+                    }
+            case 3:{
+                search();
+                break;
+                    }
+            case 4:{
+                modify();
+                break;
+                    }
+            case 5:{
+                delete();
+                break;
+                    }
+            case 6:{
+                printf("you have exited the program\n");
+                printf("Exited successfully\n");
+                printf("=============================================================================================================================================\n"); 
+                printf("Thank you\n");
+                printf("=============================================================================================================================================\n"); 
+                return 0;
+                
+                    }
+            default:{
+                printf("you have inputed the number that is not in the function\n");
+                printf("=============================================================================================================================================\n"); 
+                printf("please enter a number defined in the function\n");
+                printf("=============================================================================================================================================\n"); 
+                    }
+        
             printf("=============================================================================================================================================\n"); 
-            printf("Thank you\n");
-            printf("=============================================================================================================================================\n"); 
-            return 0;
-            
+                }
         }
-        default:{
-            printf("you have inputed the number that is not in the function\n");
-            printf("=============================================================================================================================================\n"); 
-            printf("please enter a number defined in the function\n");
-            printf("=============================================================================================================================================\n"); 
-        }
-    }
-    printf("=============================================================================================================================================\n"); 
-}
 return 0;
 }
