@@ -186,8 +186,8 @@ void display() // Function definition: Displays all stored criminal records
         int ID,nid,input;
         printf("You Have Successfully Pressed '3' to Search Criminal Record\n");
         while(1){
-        input=get_valid_int("[1] Criminal Id\t \t[2] National Id\nEnter Valid input:\n");
-        printf("please enter valid input\n");
+        input=get_valid_int("[1] Criminal Id\t \t[2] National Id\nEnter Valid input:");
+    
         
             switch(input)
             {
@@ -196,23 +196,41 @@ void display() // Function definition: Displays all stored criminal records
                     int id;
                     FILE *fp;
                     fp=fopen("criminal.dat", "rb");
-                    get_valid_int("Enter Criminal id");
-
+                    get_valid_int("Enter Criminal Id:");
                     printf("=============================================================================================================================================\n");
                     printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
                     printf("=============================================================================================================================================\n");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
-                        if(criminal.criminal_id == id){
+                        if(id==criminal.criminal_id){
                             sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
                             printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
                             printf("=============================================================================================================================================\n"); 
                             }
+                        
                     }
                     fclose(fp);
                     return; 
                     }
         
                 case 2:{
+                     int nid;
+                    FILE *fp;
+                    fp=fopen("criminal.dat", "rb");
+                    get_valid_int("Enter National Id:");
+
+                    printf("=============================================================================================================================================\n");
+                    printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                    printf("=============================================================================================================================================\n");
+                    while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
+                        if(criminal.national_id == nid){
+                            sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
+                            printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n"); 
+                            }
+                        
+                    }
+                    fclose(fp);
+
                     return;
                     }
 
