@@ -43,7 +43,7 @@ long long int get_valid_longlongint(char inputs[]);
 long long int get_valid_longlongint(char inputs[])
 {
    char line[100];
-    int value;
+    long long int value;
     char extra;
 
     while (1)
@@ -140,6 +140,28 @@ int get_valid_int_height(char input[], int min, int max)//function to take  vali
     } while (!input_is_valid);
 
     return value;
+    
+}
+int fix_duplicate(int id, long long int nid);
+int fix_duplicate(int id, long long int nid){
+    FILE *fp = fopen("criminal.dat", "rb");
+
+    if (fp == NULL)
+        return 0;
+
+    struct criminal_record temp;
+
+    while (fread(&temp, sizeof(temp), 1, fp) == 1)
+    {
+        if (temp.criminal_id == id || temp.national_id == nid)
+        {
+            fclose(fp);
+            return 1; // duplicate found
+        }
+    }
+
+    fclose(fp);
+    return 0; // no duplicate
 }
 void add(void);
 void add(void) // Function definition: Adds a new criminal record to the system
@@ -154,11 +176,24 @@ void add(void) // Function definition: Adds a new criminal record to the system
     }
     else{
         
-    criminal.criminal_id    = get_valid_int("Enter Criminal ID: ");//function calling to ask user to enter only valid interger value for criminal id
+    while (1)
+{
+    criminal.criminal_id = get_valid_int("Enter Criminal ID: ");
+    criminal.national_id = get_valid_longlongint("Enter Criminal National ID: ");
+
+    if (is_duplicate(criminal.criminal_id, criminal.national_id))
+    {
+        printf("ERROR: Criminal ID or National ID already exists!\n");
+        printf("Please enter again.\n");
+    }
+    else
+    {
+        break; // valid unique entry
+    }
+}
 
     get_valid_name("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
-    
-    criminal.national_id = get_valid_longlongint("Enter Criminal National ID: "); 
+     
    
     criminal.age = get_valid_int("Enter Criminal Age: ");
     
@@ -186,20 +221,23 @@ void display() // Function definition: Displays all stored criminal records
         return; 
     }
     else{
-        //fix this a lld or long long integer contain 64 bit so make discription and crime type below other not only for this but for other too
-        printf("=============================================================================================================================================\n"); 
-        printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
         printf("=============================================================================================================================================\n");
-        while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
+        printf("%-12s %-65s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
+        printf("=============================================================================================================================================\n");
         sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-        printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
-        printf("=============================================================================================================================================\n"); 
+        printf("%-12d %-64lld %-20s %-8d %-10s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height);  //(-) is left align and (12)is the charater reserved
+        printf("=============================================================================================================================================\n");
+        printf("%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
+        printf("=============================================================================================================================================\n");
+        printf("%-30s %-100s\n",criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+        printf("=============================================================================================================================================\n");
+                            
                 }
         fclose(fp);
         return;
     }
 
-}
+
     void search(void);
 
     void search() // Function definition: Searches for a specific criminal record
@@ -220,14 +258,17 @@ void display() // Function definition: Displays all stored criminal records
                     id=get_valid_int("Enter Criminal Id:");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(id == criminal.criminal_id){
-                            // fix the same problem like above
                             printf("=============================================================================================================================================\n");
-                            printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                            printf("%-12s %-65s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
                             printf("=============================================================================================================================================\n");
-                
                             sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-                            printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
-                            printf("=============================================================================================================================================\n"); 
+                            printf("%-12d %-64lld %-20s %-8d %-10s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n");
+                            printf("%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
+                            printf("=============================================================================================================================================\n");
+                            printf("%-30s %-100s\n",criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n");
+                            
                             }
                         else{
                             printf("CRIMINAL RECORD NOT FOUND !!");
@@ -246,14 +287,19 @@ void display() // Function definition: Displays all stored criminal records
 
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(criminal.national_id == nid){
-                            // fix the same problem as above
+                                                
                             printf("=============================================================================================================================================\n");
-                            printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                            printf("%-12s %-65s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
                             printf("=============================================================================================================================================\n");
-                    
                             sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-                            printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
-                            printf("=============================================================================================================================================\n"); 
+                            printf("%-12d %-64lld %-20s %-8d %-10s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n");
+                            printf("%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
+                            printf("=============================================================================================================================================\n");
+                            printf("%-30s %-100s\n",criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("=============================================================================================================================================\n");
+                                                
+                                
                             }
                         else {
                             printf("CRIMINAL RECORD NOT FOUND !!\n");
