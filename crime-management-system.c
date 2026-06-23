@@ -211,31 +211,57 @@ void add(void) // Function definition: Adds a new criminal record to the system
         }
 }
 void display(void);
-void display() // Function definition: Displays all stored criminal records
+void display()
 {
     FILE *fp;
-    fp =fopen("criminal.dat","rb");//rb is read mode for .dat or binary data
-    printf("\t\t\t\t\tCRIMINAL RECORDS\n");
-    if(fp==NULL){
-        fprintf(stderr,"file not opened");//stderr help to show error in a console without giving problem to program output
-        return; 
-    }
-    else{
-        printf("=============================================================================================================================================\n");
-        printf("%-12s %-65s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
-        printf("=============================================================================================================================================\n");
-        sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-        printf("%-12d %-64lld %-20s %-8d %-10s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height);  //(-) is left align and (12)is the charater reserved
-        printf("=============================================================================================================================================\n");
-        printf("%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
-        printf("=============================================================================================================================================\n");
-        printf("%-30s %-100s\n",criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
-        printf("=============================================================================================================================================\n");
-                            
-                }
-        fclose(fp);
+    struct criminal_record temp;
+
+    fp = fopen("criminal.dat", "rb");
+
+    printf("\t\t\t\tCRIMINAL RECORDS\n");
+
+    if (fp == NULL)
+    {
+        fprintf(stderr, "File not opened\n");
         return;
     }
+
+    printf("=============================================================================================================================================\n");
+    printf("%-12s %-20s %-20s %-8s %-10s\n",
+           "CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
+    printf("=============================================================================================================================================\n");
+
+    int found = 0;
+
+    while (fread(&temp, sizeof(struct criminal_record), 1, fp) == 1)
+    {
+        found = 1;
+
+        char height[10];
+        sprintf(height, "%d'%d\"", temp.feet, temp.inches);
+
+        printf("%-12d %-20lld %-20s %-8d %-10s\n",
+               temp.criminal_id,
+               temp.national_id,
+               temp.name,
+               temp.age,
+               height);
+
+        printf("---------------------------------------------------------------------------------------------------------------------------------------------");
+        printf("\n%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
+        printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
+
+        printf("%-30s %-100s\n", temp.crime, temp.description);
+        printf("=============================================================================================================================================\n");
+    }
+
+    if (!found)
+    {
+        printf("No records found.\n");
+    }
+
+    fclose(fp);
+}
 
 
     void search(void);
