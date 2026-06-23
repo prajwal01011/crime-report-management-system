@@ -1,6 +1,5 @@
 //                      CRIME MANAGEMENT SYSTEM                                       
 #include<stdio.h>
-#include<conio.h>
 #include<string.h>
 #include<stdlib.h>
 //creating a structure to store criminal details
