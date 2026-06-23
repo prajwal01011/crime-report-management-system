@@ -19,53 +19,76 @@ struct criminal_record{
 //creating a function and declaring it
 struct criminal_record criminal;
 int get_valid_int(char inputs[]);
-int get_valid_int(char inputs[])//function definition:help to get only integer value
+int get_valid_int(char inputs[])
 {
+    char line[100];
     int value;
-    int input_is_valid;
+    char extra;
 
-    do
+    while (1)
     {
-        // Ask the user for input
         printf("%s", inputs);
 
-        // Try to read a number (scanf returns 1 if it succeeded)
-        input_is_valid = scanf("%d", &value) == 1;
+        fgets(line, sizeof(line), stdin);
 
-        // If it didn't work, let the user know
-        if (!input_is_valid)
-            printf("Please Enter only numbers\n");
+        if (sscanf(line, "%d %c", &value, &extra) == 1)
+        {
+            return value;
+        }
 
-        // Clean up whatever is left in the input line
-        while (getchar() != '\n');
-
-    } while (!input_is_valid);
-
-    // We got a good number, send it back
-    return value;
+        printf("Please enter only numbers.\n");
+    }
 }
 long long int get_valid_longlongint(char inputs[]);
 long long int get_valid_longlongint(char inputs[])
 {
-    long long int value;
-    int input_is_valid;
+   char line[100];
+    int value;
+    char extra;
 
-    do
+    while (1)
     {
-        // Ask the user for input
         printf("%s", inputs);
 
-        // %lld is used for long long int instead of %d
-        input_is_valid = scanf("%lld", &value) == 1;
+        fgets(line, sizeof(line), stdin);
 
-        if (!input_is_valid)
-            printf("Please Enter only numbers\n");
+        if (sscanf(line, "%lld %c", &value, &extra) == 1)
+        {
+            return value;
+        }
 
-        while (getchar() != '\n');
+        printf("Please enter only numbers.\n");
+    }
+}
 
-    } while (!input_is_valid);
+void get_valid_name(char input[], char result[], int size);
+void get_valid_name(char input[], char result[], int size){
+    int only_spaces = 1;
+    do
+{
+    printf("%s", input);
 
-    return value;
+    fgets(result, size, stdin);
+
+    result[strcspn(result, "\n")] = '\0';
+
+    // check empty OR spaces-only
+    
+    for (int i = 0; result[i] != '\0'; i++)
+    {
+        if (result[i] != ' ')
+        {
+            only_spaces = 0;
+            break;
+        }
+    }
+
+    if (result[0] == '\0' || only_spaces)
+    {
+        printf("Please Enter Something Valid\n");
+    }
+
+} while (result[0] == '\0' || only_spaces);
 }
 
 void get_valid_string(char input[], char result[], int size);
@@ -133,7 +156,7 @@ void add(void) // Function definition: Adds a new criminal record to the system
         
     criminal.criminal_id    = get_valid_int("Enter Criminal ID: ");//function calling to ask user to enter only valid interger value for criminal id
 
-    get_valid_string("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
+    get_valid_name("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
     
     criminal.national_id = get_valid_longlongint("Enter Criminal National ID: "); 
    
@@ -258,13 +281,14 @@ void modify() // Function definition: Updates information in an existing crimina
                     FILE *fp, *fp1;
                     fp=fopen("criminal.dat", "rb");
                     fp1=fopen("temp.dat", "wb");
-                    id=get_valid_int("Enter Criminal Id:");
+                    id=get_valid_int("Enter Criminal Id To Change:");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(id == criminal.criminal_id){
                             found =1;
-                             criminal.criminal_id    = get_valid_int("Enter Criminal ID: ");//function calling to ask user to enter only valid interger value for criminal id
+                            printf("YOU have successfully entered updating mode\n");
+                            criminal.criminal_id  = get_valid_int("Enter Criminal ID: ");//function calling to ask user to enter only valid interger value for criminal id
 
-                             get_valid_string("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
+                            get_valid_name("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
                                     
                             criminal.national_id = get_valid_longlongint("Enter Criminal National ID: "); 
                                 
