@@ -1,7 +1,4 @@
-/*
-=========================================================================================
-=                       CRIME MANAGEMENT SYSTEM                                         =
-=========================================================================================*/
+//                      CRIME MANAGEMENT SYSTEM                                       
 #include<stdio.h>
 #include<conio.h>
 #include<string.h>
@@ -86,7 +83,7 @@ void get_valid_string(char input[], char result[], int size)//function definitio
         // Remove the newline at the end that fgets leaves behind
         result[strcspn(result, "\n")] = '\0';
 
-        // If user just pressed Enter without typing, ask again
+        // If user just pressed Enter without typing ask again
         if (result[0] == '\0')
             printf("Please Enter Something It Cannot  Be Empty\n");
 
@@ -166,16 +163,17 @@ void display() // Function definition: Displays all stored criminal records
         return; 
     }
     else{
-        
+        //fix this a lld or long long integer contain 64 bit so make discription and crime type below other not only for this but for other too
         printf("=============================================================================================================================================\n"); 
-        printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+        printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
         printf("=============================================================================================================================================\n");
         while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
         sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-        printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+        printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
         printf("=============================================================================================================================================\n"); 
                 }
         fclose(fp);
+        return;
     }
 
 }
@@ -196,16 +194,21 @@ void display() // Function definition: Displays all stored criminal records
                     int id;
                     FILE *fp;
                     fp=fopen("criminal.dat", "rb");
-                    get_valid_int("Enter Criminal Id:");
-                    printf("=============================================================================================================================================\n");
-                    printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
-                    printf("=============================================================================================================================================\n");
+                    id=get_valid_int("Enter Criminal Id:");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
-                        if(id==criminal.criminal_id){
+                        if(id == criminal.criminal_id){
+                            // fix the same problem like above
+                            printf("=============================================================================================================================================\n");
+                            printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                            printf("=============================================================================================================================================\n");
+                
                             sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-                            printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
                             printf("=============================================================================================================================================\n"); 
                             }
+                        else{
+                            printf("CRIMINAL RECORD NOT FOUND !!");
+                        }
                         
                     }
                     fclose(fp);
@@ -216,18 +219,22 @@ void display() // Function definition: Displays all stored criminal records
                      int nid;
                     FILE *fp;
                     fp=fopen("criminal.dat", "rb");
-                    get_valid_int("Enter National Id:");
+                    nid = get_valid_int("Enter National Id:");
 
-                    printf("=============================================================================================================================================\n");
-                    printf("%-12s %-15s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
-                    printf("=============================================================================================================================================\n");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(criminal.national_id == nid){
+                            // fix the same problem as above
+                            printf("=============================================================================================================================================\n");
+                            printf("%-12s %-20s %-20s %-8s %-10s %-20s %-50s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT", "CRIME TYPE", "DESCRIPTION");
+                            printf("=============================================================================================================================================\n");
+                    
                             sprintf(criminal.height, "%d'%d\"", criminal.feet, criminal.inches);//help to store both integer in string variable 
-                            printf("%-12d %-15lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
+                            printf("%-12d %-19lld %-20s %-8d %-10s %-20s %-50s\n",criminal.criminal_id,criminal.national_id,criminal.name,criminal.age,criminal.height,criminal.crime,criminal.description);  //(-) is left align and (12)is the charater reserved
                             printf("=============================================================================================================================================\n"); 
                             }
-                        
+                        else {
+                            printf("CRIMINAL RECORD NOT FOUND !!\n");
+                        }
                     }
                     fclose(fp);
 
@@ -244,14 +251,111 @@ void modify(void);
 
 void modify() // Function definition: Updates information in an existing criminal record
 {
+    
+        printf("You Have Successfully Pressed '4' to Delete Criminal Record\n");
+    
+                    int id,found=0;
+                    FILE *fp, *fp1;
+                    fp=fopen("criminal.dat", "rb");
+                    fp1=fopen("temp.dat", "wb");
+                    id=get_valid_int("Enter Criminal Id:");
+                    while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
+                        if(id == criminal.criminal_id){
+                            found =1;
+                             criminal.criminal_id    = get_valid_int("Enter Criminal ID: ");//function calling to ask user to enter only valid interger value for criminal id
 
+                             get_valid_string("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
+                                    
+                            criminal.national_id = get_valid_longlongint("Enter Criminal National ID: "); 
+                                
+                            criminal.age = get_valid_int("Enter Criminal Age: ");
+                                    
+                            printf("Enter Criminal Height in Feet & Inches: \n");
+                            criminal.feet= get_valid_int_height("Enter  First Feet Only: ", 1,7);
+                                    
+                            criminal.inches =get_valid_int_height("Now Enter The Inches: ",0,11);
+                                    
+                            get_valid_string("Enter Crime Commeted Type: ", criminal.crime, sizeof(criminal.crime));
+
+                            get_valid_string("Enter Crime Commited Description: ", criminal.description, sizeof(criminal.description));
+
+                            
+
+                            
+
+                            }
+                        
+                           fwrite(&criminal , sizeof(criminal), 1, fp1 );
+                        
+                        
+                    }
+                    fclose(fp);
+                    fclose(fp1);
+                    if(found != 1){
+                        printf("!!RECORD NOT FOUND!!\n");
+                    }
+                    else{
+                        printf("RECORD updated SUCCESSFULLY!!\n");
+                        fp=fopen("criminal.dat", "wb");
+                        fp1=fopen("temp.dat", "rb");
+                        while(fread(&criminal, sizeof(struct criminal_record), 1,fp1)==1){
+                            fwrite(&criminal , sizeof(criminal), 1, fp);
+                    
+                        }
+                     fclose(fp);
+                     fclose(fp1); 
+                     return;
+                       
+                    }
+                     
+     
 }
 
 void delete(void);
 void delete() // Function definition: Removes a criminal record from the system
 {
+        printf("You Have Successfully Pressed '5' to Delete Criminal Record\n");
+    
+                    int id,found=0;
+                    FILE *fp, *fp1;
+                    fp=fopen("criminal.dat", "rb");
+                    fp1=fopen("temp.dat", "wb");
+                    id=get_valid_int("Enter Criminal Id:");
+                    while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
+                        if(id == criminal.criminal_id){
+                            found =1;
+                            
 
-}
+                            
+
+                            }
+                        else{
+                           fwrite(&criminal , sizeof(criminal), 1, fp1 );
+                        }
+                        
+                    }
+                    fclose(fp);
+                    fclose(fp1);
+                    if(found != 1){
+                        printf("!!RECORD NOT FOUND!!\n");
+                    }
+                    if(found == 1){
+                        printf("RECORD DELETED SUCCESSFULLY!!\n");
+                        fp=fopen("criminal.dat", "wb");
+                        fp1=fopen("temp.dat", "rb");
+                        while(fread(&criminal, sizeof(struct criminal_record), 1,fp1)==1){
+                            fwrite(&criminal , sizeof(criminal), 1, fp);
+                    
+                        }
+                     fclose(fp);
+                     fclose(fp1); 
+                     return;
+                       
+                    }
+                    } 
+        
+                
+
 
 
     int main(){
