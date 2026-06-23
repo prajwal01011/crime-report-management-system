@@ -38,6 +38,26 @@ int get_valid_int(char inputs[])
         printf("Please enter only numbers.\n");
     }
 }
+int get_valid_age(char input[]);
+int get_valid_age(char input[])
+{
+    int age;
+    char line[100], extra;
+
+    while (1)
+    {
+        printf("%s", input);
+        fgets(line, sizeof(line), stdin);
+
+        if (sscanf(line, "%d %c", &age, &extra) == 1)
+        {
+            if (age > 0 && age <= 120)
+                return age;
+        }
+
+        printf("Please enter a valid age (1 - 120)\n");
+    }
+}
 long long int get_valid_longlongint(char inputs[]);
 long long int get_valid_longlongint(char inputs[])
 {
@@ -194,7 +214,7 @@ void add(void) // Function definition: Adds a new criminal record to the system
     get_valid_name("Enter criminal Name: ",criminal.name ,sizeof(criminal.name) );// function calling to ask user to enter only valid string or character value for name
      
    
-    criminal.age = get_valid_int("Enter Criminal Age: ");
+    criminal.age = get_valid_age("Enter Criminal Age: ");
     
     printf("Enter Criminal Height in Feet & Inches: \n");
     criminal.feet= get_valid_int_height("Enter  First Feet Only: ", 1,7);
@@ -359,7 +379,7 @@ void modify() // Function definition: Updates information in an existing crimina
                                     
                             criminal.national_id = get_valid_longlongint("Enter Criminal National ID: "); 
                                 
-                            criminal.age = get_valid_int("Enter Criminal Age: ");
+                            criminal.age = get_valid_age("Enter Criminal Age: ");
                                     
                             printf("Enter Criminal Height in Feet & Inches: \n");
                             criminal.feet= get_valid_int_height("Enter  First Feet Only: ", 1,7);
