@@ -160,8 +160,8 @@ int get_valid_int_height(char input[], int min, int max)//function to take  vali
     return value;
     
 }
-int fix_duplicate(int id, long long int nid);
-int fix_duplicate(int id, long long int nid){
+int fix_duplicate_id(int id);
+int fix_duplicate_id(int id){
     FILE *fp = fopen("criminal.dat", "rb");
 
     if (fp == NULL)
@@ -171,7 +171,28 @@ int fix_duplicate(int id, long long int nid){
 
     while (fread(&temp, sizeof(temp), 1, fp) == 1)
     {
-        if (temp.criminal_id == id || temp.national_id == nid)
+        if (temp.criminal_id == id)
+        {
+            fclose(fp);
+            return 1; // duplicate found
+        }
+    }
+
+    fclose(fp);
+    return 0; // no duplicate
+}
+int fix_duplicate_nid(long long int nid);
+int fix_duplicate_nid(long long int nid){
+    FILE *fp = fopen("criminal.dat", "rb");
+
+    if (fp == NULL)
+        return 0;
+
+    struct criminal_record temp;
+
+    while (fread(&temp, sizeof(temp), 1, fp) == 1)
+    {
+        if (temp.national_id == nid)
         {
             fclose(fp);
             return 1; // duplicate found
@@ -193,15 +214,30 @@ void add(void) // Function definition: Adds a new criminal record to the system
     return;
     }
     else{
-        
+
+      // to fix duplication of criminal id  
     while (1)
 {
     criminal.criminal_id = get_valid_int("Enter Criminal ID: ");
+
+    if (fix_duplicate_id(criminal.criminal_id))
+    {
+        printf("ERROR: Criminal Id already exists!\n");
+        printf("Please enter again.\n");
+    }
+    else
+    {
+        break; // valid unique entry
+    }
+}
+        //to fix duplication of nid
+        while (1)
+{
     criminal.national_id = get_valid_longlongint("Enter Criminal National ID: ");
 
-    if (fix_duplicate(criminal.criminal_id, criminal.national_id))
+    if (fix_duplicate_nid(criminal.national_id))
     {
-        printf("ERROR: Criminal ID or National ID already exists!\n");
+        printf("ERROR: Criminal NID already exists!\n");
         printf("Please enter again.\n");
     }
     else
