@@ -302,11 +302,9 @@ void display()
         printf("%-12d %-20lld %-20s %-8d %-10s\n", criminal.criminal_id, criminal.national_id, criminal.name, criminal.age, height);
 
         printf("---------------------------------------------------------------------------------------------------------------------------------------------");
-        printf("\n%-30s %-100s\n", "CRIME TYPE", "DESCRIPTION");
+        printf("\n%-15s %-20s %-15s %-80s \n", "CRIME TYPE :", criminal.crime, "DESCRIPTION :", criminal.description);
         printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
 
-        printf("%-30s %-100s\n", criminal.crime, criminal.description);
-        printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
     }
 
     if (!found)
