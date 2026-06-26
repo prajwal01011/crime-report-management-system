@@ -548,6 +548,7 @@ void delete() // Function definition: Removes a criminal record from the system
                 break;
                     }
             case 6:{
+                clearscreen();
                 printf("You have pressed 6 \n");
                 printf("Exited successfully\n");
                 printf("......................................\n"); 
@@ -558,6 +559,7 @@ void delete() // Function definition: Removes a criminal record from the system
                 return 0;
                     }
             default:{
+                clearscreen();
                 printf("you have inputed the number that is not in the function\n");
                 printf("=============================================================================================================================================\n"); 
                 printf("please enter a number defined in the function\n");
