@@ -1,7 +1,8 @@
-//                      CRIME MANAGEMENT SYSTEM                                       
+//                      CRIME REPORT MANAGEMENT SYSTEM                                       
 #include<stdio.h>
 #include<string.h>
 #include<stdlib.h>
+
 //creating a structure to store criminal details
 struct criminal_record{
     int criminal_id;
@@ -37,7 +38,11 @@ int get_valid_int(char inputs[])
         printf("Please enter only numbers.\n");
     }
 }
-int get_valid_age(char input[]);
+void clearscreen(void); //function to clear screeen
+void clearscreen(void){
+    system("cls");
+}
+int get_valid_age(char input[]);// function to get valid age 1 - 100
 int get_valid_age(char input[])
 {
     int age;
@@ -50,7 +55,7 @@ int get_valid_age(char input[])
 
         if (sscanf(line, "%d %c", &age, &extra) == 1)
         {
-            if (age > 0 && age <= 120)
+            if (age > 0 && age <= 100)
                 return age;
         }
 
@@ -279,10 +284,7 @@ void display()
         return;
     }
 
-    printf("=============================================================================================================================================\n");
-    printf("%-12s %-20s %-20s %-8s %-10s\n",
-           "CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
-    printf("=============================================================================================================================================\n");
+   
 
     int found = 0;
 
@@ -291,7 +293,11 @@ void display()
         found = 1;
 
         char height[10];
-        sprintf(height, "%d'%d\"", criminal.feet, criminal.inches);
+        sprintf(height, "%d'%d\"", criminal.feet, criminal.inches);//converts integer into string
+        printf("=============================================================================================================================================\n");
+        printf("%-12s %-20s %-20s %-8s %-10s\n",
+           "CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
+        printf("=============================================================================================================================================\n");
 
         printf("%-12d %-20lld %-20s %-8d %-10s\n", criminal.criminal_id, criminal.national_id, criminal.name, criminal.age, height);
 
@@ -300,7 +306,7 @@ void display()
         printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
 
         printf("%-30s %-100s\n", criminal.crime, criminal.description);
-        printf("=============================================================================================================================================\n");
+        printf("---------------------------------------------------------------------------------------------------------------------------------------------\n");
     }
 
     if (!found)
@@ -518,33 +524,39 @@ void delete() // Function definition: Removes a criminal record from the system
         printf("=============================================================================================================================================\n");
         switch(task){
             case 1:{
+            clearscreen();
             add();
             break;  
                     }
             case 2:{
+                clearscreen();
                 display();
                 break;
                     }
             case 3:{
+                clearscreen();
                 search();
                 break;
                     }
             case 4:{
+                clearscreen();
                 modify();
                 break;
                     }
             case 5:{
+                clearscreen();
                 delete();
                 break;
                     }
             case 6:{
-                printf("you have exited the program\n");
+                printf("You have pressed 6 \n");
                 printf("Exited successfully\n");
-                printf("=============================================================================================================================================\n"); 
+                printf("......................................\n"); 
                 printf("Thank you\n");
-                printf("=============================================================================================================================================\n"); 
+                printf("......................................\n"); 
+                printf("\t:}\n");
+                getch();
                 return 0;
-                
                     }
             default:{
                 printf("you have inputed the number that is not in the function\n");
