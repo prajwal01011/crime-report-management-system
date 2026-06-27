@@ -60,7 +60,7 @@ int get_valid_age(char input[])
                 return age;
         }
 
-        printf("Please enter a valid age (1 - 120)\n");
+        printf("Please enter a valid age (1 - 100)\n");
     }
 }
 long long int get_valid_longlongint(char inputs[]);
@@ -321,7 +321,8 @@ void display()
 
     void search() // Function definition: Searches for a specific criminal record
     {
-        int ID,nid,input;
+        int input;
+        int found=0;
         printf("You Have Successfully Pressed '3' to Search Criminal Record\n");
         while(1){
         input=get_valid_int("[1] Criminal Id\t \t[2] National Id\nEnter Valid input:");
@@ -332,11 +333,13 @@ void display()
 
                 case 1:{
                     int id;
+                    found=0;
                     FILE *fp;
                     fp=fopen("criminal.dat", "rb");
                     id=get_valid_int("Enter Criminal Id:");
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(id == criminal.criminal_id){
+                            found=1;
                             char height[10];
                             printf("=============================================================================================================================================\n");
                             printf("%-12s %-20s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
@@ -349,18 +352,21 @@ void display()
 
                             printf("%-30s %-100s\n", criminal.crime, criminal.description);
                             printf("=============================================================================================================================================\n");
-                            
+                            break;
                             }
-                        else{
-                            printf("CRIMINAL RECORD NOT FOUND !!");
-                        }
                         
                     }
+                    if(!found){
+                            printf("CRIMINAL RECORD NOT FOUND !!");
+                            getch();
+                        }
+                        
                     fclose(fp);
                     return; 
                     }
         
                 case 2:{
+                    found=0;
                      int nid;
                     FILE *fp;
                     fp=fopen("criminal.dat", "rb");
@@ -368,7 +374,8 @@ void display()
 
                     while(fread(&criminal, sizeof(struct criminal_record), 1,fp)==1) {
                         if(criminal.national_id == nid){
-                             char height[10];
+                            found=1;
+                            char height[10];
                             printf("=============================================================================================================================================\n");
                             printf("%-12s %-20s %-20s %-8s %-10s\n","CRIMINAL ID", "NATIONAL ID", "NAME", "AGE", "HEIGHT");
                             printf("=============================================================================================================================================\n");
@@ -380,12 +387,14 @@ void display()
 
                             printf("%-30s %-100s\n", criminal.crime, criminal.description);
                             printf("=============================================================================================================================================\n");                 
-                                
+                             break;   
                             }
-                        else {
-                            printf("CRIMINAL RECORD NOT FOUND !!\n");
-                        }
+                        
                     }
+                    if(!found) {
+                            printf("CRIMINAL RECORD NOT FOUND !!\n");
+                            getch();
+                        }
                     fclose(fp);
 
                     return;
@@ -402,7 +411,7 @@ void modify(void);
 void modify() // Function definition: Updates information in an existing criminal record
 {
     
-        printf("You Have Successfully Pressed '4' to Delete Criminal Record\n");
+        printf("You Have Successfully Pressed '4' to Modify Criminal Record\n");
     
                     int id,found=0;
                     FILE *fp, *fp1;
